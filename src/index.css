@@ -18,7 +18,7 @@ code {
 }
 
 .card{
-  max-width: 300px;
+  max-width: 250px;
   padding-top: 15px;
 }
 
@@ -37,4 +37,32 @@ code {
   margin: 0 auto;
   width: 300px;
   padding-bottom: 20px;
+}
+
+.header{
+  padding-bottom: 10px;
+  overflow: auto;
+}
+
+.header h2{
+  float: left;
+}
+
+.header button{
+  float: right;
+}
+
+.favourite-icon{
+  margin-left: 10px;
+}
+
+.favourite-icon.active{
+  color: #ff518b;
+}
+
+.margin-top-10{
+  margin-top: 20px;
+}
+.margin-left-20{
+  margin-left: 20px;
 }
