@@ -9,19 +9,21 @@ library.add(faHeart);
 
 class Beer extends React.Component{
 
-    state = {
-        favourites: this.props.favourites
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            isFavourite: this.props.isFavourite
+        };
+        this.toggleUserBeer = this.toggleUserBeer.bind(this);
+    }
 
-    toggleUserBeer = this.toggleUserBeer.bind(this);
-
-    static getDerivedStateFromProps(props, state) { // this method is causing problems and not letting the state update after beer is toggled, need to fix!
-        if (props.favourites !== state.favourites) {
-            return {
-                favourites: props.favourites
-            };
+    componentDidUpdate(prevProps, prevState, snapshot){
+        if(prevState.isFavourite !== this.props.isFavourite){
+            this.setState({
+                ...this.state,
+                isFavourite: this.props.isFavourite
+            })
         }
-        return null;
     }
 
     toggleUserBeer(){
@@ -32,16 +34,9 @@ class Beer extends React.Component{
         fetch(url, { method: 'POST'})
             .then(response => {
                     if (response.ok) {
-                        const beerId = this.props.beer.id;
-                        const index = this.state.favourites.indexOf(beerId);
-
                         this.setState({
                             ...this.state,
-                            favourites: index !== -1 ?
-                                this.state.favourites.concat(beerId) :
-                                this.state.favourites.filter(function(b) {
-                                    return b !== beerId
-                                })
+                            isFavourite: !this.state.isFavourite
                         });
                         return response;
                     } else {
@@ -65,7 +60,7 @@ class Beer extends React.Component{
                     {this.props.userGoogleId ?
                         <FontAwesomeIcon icon="heart"
                                          className={"fa-lg favourite-icon " +
-                                         (this.state.favourites.includes(this.props.beer.id) ? "active" : "")}
+                                         (this.state.isFavourite ? "active" : "")}
                                          onClick={() => this.toggleUserBeer()
                                          }/> : <div />
                     }
@@ -136,10 +131,16 @@ class BeerList extends React.Component{
     render() {
         // display (max) 5 beers in a row
         const beers1 = this.props.beers.slice(0, 5).map((beer) => (
-            <Beer key={beer.id} beer={beer} userGoogleId={this.props.userGoogleId} favourites={this.state.favourites}/>
+            <Beer key={beer.id}
+                  beer={beer}
+                  userGoogleId={this.props.userGoogleId}
+                  isFavourite={this.state.favourites ? this.state.favourites.includes(beer.id) : false}/>
         ));
         const beers2 = this.props.beers.slice(5).map((beer) => (
-            <Beer key={beer.id} beer={beer} userGoogleId={this.props.userGoogleId} favourites={this.state.favourites}/>
+            <Beer key={beer.id}
+                  beer={beer}
+                  userGoogleId={this.props.userGoogleId}
+                  isFavourite={this.state.favourites ? this.state.favourites.includes(beer.id) : false}/>
         ));
         return (
                 /*
